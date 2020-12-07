@@ -32,7 +32,12 @@ function grape.monitor()
   end
 end
 
+-- -- -- -- Main -- -- -- --
+
+-- Are we a library?
 if not pcall(getfenv, 4) then
+  
+  -- No
   if arg[1] == ("s" or "seek") then
 
     local n =  tonumber(arg[2])
@@ -99,5 +104,6 @@ if not pcall(getfenv, 4) then
     do return grape end
   end
 else
+  -- Yes
   do return grape end
 end
