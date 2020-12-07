@@ -9,7 +9,7 @@ for address, name in c.list("tape_drive", true) do
 end
 
 -- Primary tape drive, used for most functions
-local tape = tape[0]
+local tape = tapes[0]
 
 -- -- -- -- Module -- -- -- --
 local grape = {}
