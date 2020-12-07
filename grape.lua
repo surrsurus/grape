@@ -46,12 +46,22 @@ if not pcall(getfenv, 4) then
       print("Err: arg 2 must be num")
       do return false end
     end
+    
+    if not tape.isReady() then
+      print("Err: no tape")
+      do return false end
+    end
 
     grape.seek(n)
 
     do return true end
 
   elseif arg[1] == ("r" or "rewind") then
+    
+    if not tape.isReady() then
+      print("Err: no tape")
+      do return false end
+    end
 
     grape.seek(-tape.getPosition())
 
@@ -92,7 +102,7 @@ if not pcall(getfenv, 4) then
     -- Runs as thread
     local event = require("event")
     -- Make this 1 if you want more CPU
-    event.timer(0.5, grape.monitor, math.huge)
+    event.timer(0.5, grape.monitor(), math.huge)
 
   else
     print("grape <command>")
