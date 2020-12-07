@@ -47,13 +47,13 @@ if not pcall(getfenv, 4) then
       do return false end
     end
 
-    seek(n)
+    grape.seek(n)
 
     do return true end
 
   elseif arg[1] == ("r" or "rewind") then
 
-    seek(-tape.getPosition())
+    grape.seek(-tape.getPosition())
 
     do return true end
 
@@ -92,7 +92,7 @@ if not pcall(getfenv, 4) then
     -- Runs as thread
     local event = require("event")
     -- Make this 1 if you want more CPU
-    event.timer(0.5, monitor, math.huge)
+    event.timer(0.5, grape.monitor, math.huge)
 
   else
     print("grape <command>")
