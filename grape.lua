@@ -9,7 +9,7 @@ for address, name in c.list("tape_drive", true) do
 end
 
 -- Primary tape drive, used for most functions
-local tape = tapes[0]
+local tape = c.tape_drive
 
 -- -- -- -- Module -- -- -- --
 local grape = {}
@@ -19,8 +19,8 @@ function grape.seek(n)
   tape.seek(n)
 end
 
--- Smart tape drive monitor - run as threaded event
-function grape.monitor()
+-- Won't work as OpenComputers event if it's a module function?
+function monitor()
   -- Run over all tapes
   for _, t in ipairs(tapes) do
       if t.isEnd() then
@@ -30,6 +30,11 @@ function grape.monitor()
         grape.seek(-t.getPosition())
       end
   end
+end
+
+-- Smart tape drive monitor - run as threaded event
+function grape.monitor()
+  monitor()
 end
 
 -- -- -- -- Main -- -- -- --
@@ -102,7 +107,7 @@ if not pcall(getfenv, 4) then
     -- Runs as thread
     local event = require("event")
     -- Make this 1 if you want more CPU
-    event.timer(0.5, grape.monitor(), math.huge)
+    event.timer(0.5, monitor, math.huge)
 
   else
     print("grape <command>")
