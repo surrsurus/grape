@@ -22,7 +22,7 @@ end
 -- Smart tape drive monitor - run as threaded event
 function grape.monitor()
   -- Run over all tapes
-  for _, t in tapes do
+  for _, t in ipairs(tapes) do
       if t.isEnd() then
         seek(-t.getPosition())
       end
