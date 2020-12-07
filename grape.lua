@@ -1,23 +1,20 @@
 local tape = require("component").tape_drive
 local arg = {...}
-local REW = -10000000000000
+
+-- Seek to byte n on a cassette
 function seek(n)
   tape.seek(n)
 end
 
--- if not tape.isReady() then
---  print("tape not ready.")
---  do return false end
--- end
-
+-- Smart tape drive monitor - run as threaded event
 function monitor()
 
   -- while true do
   if tape.isEnd() then
-    seek(REW)
+    seek(-tape.getPosition())
   end
   if tape.getState() == "REWINDING" then    
-    seek(REW)
+    seek(-tape.getPosition())
   end
   -- os.execute("sleep " .. tonumber(0.5))
 
@@ -38,7 +35,7 @@ if arg[1] == ("s" or "seek") then
 
 elseif arg[1] == ("r" or "rewind") then
 
-  seek(REW)
+  seek(-tape.getPosition())
   
   do return true end
 
@@ -57,8 +54,8 @@ elseif arg[1] == ("c" or "copy") then
   print("ok?")
   io.read()
   
-  tape_a.seek(REW)
-  tape_b.seek(REW)
+  tape_a.seek(-tape_a.getPosition())
+  tape_b.seek(-tape_b.getPosition())
 
   local t = 0
 
@@ -71,12 +68,13 @@ elseif arg[1] == ("c" or "copy") then
   do return true end
 
 elseif arg[1] == ("m" or "monitor") then
-
+  
   print("monitor running.")
-     
+   
+  -- Runs as thread
   local event = require("event")
-
-  event.timer(1, monitor, math.huge)
+  -- Make this 1 if you want more CPU
+  event.timer(0.5, monitor, math.huge)
 
 else
   print("grape <command>")
