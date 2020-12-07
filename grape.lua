@@ -24,10 +24,10 @@ function grape.monitor()
   -- Run over all tapes
   for _, t in ipairs(tapes) do
       if t.isEnd() then
-        seek(-t.getPosition())
+        grape.seek(-t.getPosition())
       end
       if t.getState() == "REWINDING" then    
-        seek(-t.getPosition())
+        grape.seek(-t.getPosition())
       end
   end
 end
