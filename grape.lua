@@ -1,5 +1,14 @@
-local tape = require("component").tape_drive
+local c = require("component")
 local arg = {...}
+
+-- Get all tapes
+local tapes = {}
+for address, name in c.list("tape_drive", true) do
+  table.insert(tapes, component.proxy(address))
+end
+
+-- Primary tape drive, used for most functions
+local tape = c.tape_drive
 
 -- Seek to byte n on a cassette
 function seek(n)
@@ -8,16 +17,15 @@ end
 
 -- Smart tape drive monitor - run as threaded event
 function monitor()
-
-  -- while true do
-  if tape.isEnd() then
-    seek(-tape.getPosition())
+  -- Run over all tapes
+  for _, t in tapes do
+      if t.isEnd() then
+        seek(-t.getPosition())
+      end
+      if t.getState() == "REWINDING" then    
+        seek(-t.getPosition())
+      end
   end
-  if tape.getState() == "REWINDING" then    
-    seek(-tape.getPosition())
-  end
-  -- os.execute("sleep " .. tonumber(0.5))
-
 end
 
 if arg[1] == ("s" or "seek") then
@@ -78,6 +86,7 @@ elseif arg[1] == ("m" or "monitor") then
 
 else
   print("grape <command>")
+  print("grape works on your primary hard drive. In monitor mode, grape looks at all drives.")
   print("(s)eek <n>     -  seek n bytes. n can be negative. can be done while tape is playing")
   print("(r)ewind       - instantly rewind a tape")
   print("(m)onitor      - start monitor mode. in monitor mode, any connected tape drive will automatically insta-rewind on rewind press and at tape end.")
